@@ -1,15 +1,12 @@
 // Day 2, Puzzle 1
-const fs = require('fs');
-const readline = require('readline');
+const lineReader = require('../lib/linereader');
 
-const garbIn = readline.createInterface({
-    input: fs.createReadStream('box-ids.txt')
-});
+lineReader.processFile('box-ids.txt', lineHandler, closeHandler);
 
 var twoCount = 0;
 var threeCount = 0;
 
-garbIn.on('line', (line) => {
+function lineHandler(line) {
 
     var charMap = new Map();
     var foundTwo = false;
@@ -30,13 +27,13 @@ garbIn.on('line', (line) => {
             threeCount++;
         }
     });
-});
+}
 
-garbIn.on('close', () => {
+function closeHandler() {
     console.log (`Duplicates: ${twoCount}`);
     console.log (`Triplicates: ${threeCount}`);
     console.log (`Checksum: ${twoCount * threeCount}`);
-});
+}
 
 /* Day 2 - Puzzle 1
 --- Day 2: Inventory Management System ---

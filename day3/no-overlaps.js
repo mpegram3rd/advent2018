@@ -1,6 +1,6 @@
 // Day 3, Puzzle 2
-const fs = require('fs');
-const readline = require('readline');
+const lineReader = require('../lib/linereader');
+
 const claims = [];
 
 // Create a 2d fabric array.
@@ -10,18 +10,16 @@ for (var x = 0; x < fabric.length; x++) {
     fabric[x].fill(0);
 }
 
-const garbIn = readline.createInterface({
-    input: fs.createReadStream('fabric-claims.txt')
-});
+lineReader.processFile('fabric-claims.txt', lineHandler, closeHandler);
 
-garbIn.on('line', (line) => {
+function lineHandler(line) {
     var claim = parseClaim(line);
     claims.push(claim);
     applyClaim(claim, fabric);
-});
+}
 
 // When we're done reading and marking up the fabric, check to find the non-overlapping claim
-garbIn.on('close', () => {
+function closeHandler() {
     for (var x = 0; x < claims.length; x++) {
         var claim = claims[x];
         if (!isOverlapped(claim, fabric)) {
@@ -30,7 +28,7 @@ garbIn.on('close', () => {
             return;
         }
     }
-});
+}
 
 // Returns "true" if there is an overlap, false, if not.
 function isOverlapped(claim, fabric) {

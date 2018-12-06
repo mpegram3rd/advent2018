@@ -1,20 +1,17 @@
 // Day 2, Puzzle 2
-const fs = require('fs');
-const readline = require('readline');
+const lineReader = require('../lib/linereader');
 
 const boxes = new Set([]);
 
-const garbIn = readline.createInterface({
-    input: fs.createReadStream('box-ids.txt')
-});
+lineReader.processFile('box-ids.txt', lineHandler);
 
-garbIn.on('line', (line) => {
+function lineHandler(line) {
     if (findCloseMatch(line, boxes)) {
         process.exit(0);
     }
     // If not found then add it to the boxes we've already seen so we can keep searching.
     boxes.add(line);
-});
+}
 
 /**
  * Tries to see if the boxId is close (1 character different in the ID)
