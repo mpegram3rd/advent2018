@@ -1,22 +1,19 @@
 // Day 1, Puzzle 1
-const fs = require('fs');
-const readline = require('readline');
+const lineReader = require('../lib/linereader');
 
-const garbIn = readline.createInterface({
-    input: fs.createReadStream('frequency-data.txt')
-});
+lineReader.processFile('frequency-data.txt', lineHandler, closeHandler);
 
 var frequency = 0;
 
-garbIn.on('line', (line) => {
+function lineHandler(line) {
     var oldFrequency = frequency
     frequency += parseInt(line);
     console.log(`Current frequency ${oldFrequency}, change of ${line}; resulting frequency ${frequency}`);
-});
+}
 
-garbIn.on('close', () => {
+function closeHandler() {
    console.log(`Final frequency is: ${frequency}`)
-});
+}
 
 /* Day 1 - Puzzle 1
 --- Day 1: Chronal Calibration ---

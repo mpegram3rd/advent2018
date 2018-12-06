@@ -1,6 +1,5 @@
 // Day 1, Puzzle 2
-const fs = require('fs');
-const readline = require('readline');
+const lineReader = require('../lib/linereader');
 
 // Setup for handling events so we can properly handle the looping/async processing of the file.
 const eventsEmitter = require('events').EventEmitter;
@@ -9,6 +8,25 @@ const eventHandler = new eventsEmitter.EventEmitter();
 // Initialize the tracking variables.
 var frequency = 0;
 const frequenciesSeen = new Set([frequency]);
+
+// Process each line
+function lineHandler(line) {
+    frequency += parseInt(line);
+
+    // If we find a matching frequency, emit an event to tell our program to stop.
+    if (frequenciesSeen.has(frequency)) {
+        eventHandler.emit('foundMatch', frequency);
+    }
+    else {
+        // Add unique frequency into the set and keep churning.
+        frequenciesSeen.add(frequency);
+    }
+}
+
+// Tell the process to start all over again if we hit the end of the file.
+function closeHandler() {
+    eventHandler.emit('startRead');
+}
 
 // If we find a match, output the frequency that repeated and exit
 eventHandler.on('foundMatch', (matchedFrequency) => {
@@ -20,28 +38,7 @@ eventHandler.on('foundMatch', (matchedFrequency) => {
 eventHandler.on('startRead', () => {
 
     // We define a readline handler and associated events.
-    const garbIn = readline.createInterface({
-        input: fs.createReadStream('frequency-data.txt')
-    });
-
-    // Process each line
-    garbIn.on('line', (line) => {
-        frequency += parseInt(line);
-
-        // If we find a matching frequency, emit an event to tell our program to stop.
-        if (frequenciesSeen.has(frequency)) {
-            eventHandler.emit('foundMatch', frequency);
-        }
-        else {
-            // Add unique frequency into the set and keep churning.
-            frequenciesSeen.add(frequency);
-        }
-    });
-
-    // Tell the process to start all over again if we hit the end of the file.
-    garbIn.on('close', () => {
-        eventHandler.emit('startRead');
-    });
+    lineReader.processFile('frequency-data.txt', lineHandler, closeHandler);
 });
 
 // Initiate the file read.
