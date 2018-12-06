@@ -6,7 +6,7 @@ lineReader.processFile('frequency-data.txt', lineHandler, closeHandler);
 var frequency = 0;
 
 function lineHandler(line) {
-    var oldFrequency = frequency
+    var oldFrequency = frequency;
     frequency += parseInt(line);
     console.log(`Current frequency ${oldFrequency}, change of ${line}; resulting frequency ${frequency}`);
 }
